@@ -22,6 +22,6 @@ Python Packages
 I'm not using virtualenv (for various bad reasons), so I'm making a list of the packages I've used here:
   - numpy/scipy stack
   - tensorflow (of course)
-  - Flask
+  - Flask ([A good Flask resource for the unfamiliar][2]--including me!)
   
 [1]: https://github.com/seiyria/bootstrap-slider/

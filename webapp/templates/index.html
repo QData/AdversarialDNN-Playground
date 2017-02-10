@@ -60,7 +60,7 @@
                 <h3 class = "panel-title">System output</h3>
               </div>
               <div class="panel-body">
-                <p> Here is where the visualizations will be </p>
+                <img id="vizpanel" />
               </div>
           </div>
           
@@ -107,6 +107,7 @@
               upsilon_value : slider_val,
             },
             function(data,status){
+              document.getElementById('vizpanel').src="{{ url_for('static', filename='comparison.png')}}";
                 alert("Data: " + data + "\nStatus: " + status);
             });
           });
