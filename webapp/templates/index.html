@@ -61,6 +61,7 @@
               </div>
               <div class="panel-body">
                 <img id="vizpanel" />
+                <img id="pltpanel" />
               </div>
           </div>
           
@@ -108,7 +109,8 @@
             },
             function(data,status){
               document.getElementById('vizpanel').src="{{ url_for('static', filename='comparison.png')}}";
-                alert("Data: " + data + "\nStatus: " + status);
+              //document.getElementById('pltpanel').src="{{ url_for('static', filename='plot.png')}}";
+
             });
           });
       });

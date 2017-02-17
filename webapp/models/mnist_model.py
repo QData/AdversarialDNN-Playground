@@ -64,6 +64,8 @@ def train_and_save_model(filename):
   tf.add_to_collection('mnist', keep_prob)
   tf.add_to_collection('mnist', y_conv)
   tf.add_to_collection('mnist', correct_count)
+  tf.add_to_collection('mnist', cross_entropy)
+
   
   # Train the model
   with tf.Session() as sess:
@@ -78,3 +80,5 @@ def train_and_save_model(filename):
     save_path = saver.save(sess, filename)
     print('Model saved to: {}'.format(filename))
   
+if __name__ == '__main__':
+  train_and_save_model('./mnist-model')

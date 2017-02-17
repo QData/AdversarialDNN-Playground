@@ -59,6 +59,7 @@ def l1_attack(source_class, target_class, max_distortion):
   # Get the feed dict parameters we needed
   x = tf.get_collection('mnist')[0]
   keep_prob = tf.get_collection('mnist')[2]
+
   
   X = np.array(mnist_data[source_class], ndmin=2)
   orig = np.copy(X)
@@ -88,7 +89,7 @@ def l1_attack(source_class, target_class, max_distortion):
       print(curr_iter)
   print('Finished {} iterations.'.format(curr_iter))
   print('Writing to file')
-  plt.figure(figsize=(12, 4))
+  plt.figure(figsize=(6, 4))
   plt.subplot(1, 2, 1)
 
   plt.title('Adversarial Input')
@@ -99,6 +100,29 @@ def l1_attack(source_class, target_class, max_distortion):
   plt.imshow(np.reshape(orig, (28, 28)))
   
   plt.savefig('.\webapp\static\comparison.png')
+  """
+  adv_probs = y_conv.eval(feed_dict={x:X_adversary, keep_prob:1.0})
+  norm_probs = y_conv.eval(feed_dict={x:X, keep_prob:1.0})
+
+  # Plot the rankings
+  plt.figure(figsize=(6, 4))
+  plt.subplot(1, 2, 1)
+  plt.title('Adversarial Likelihoods')
+  plt.xlabel('Class')
+  plt.ylabel('Likelihood')
+  plt.bar(range(10), adv_probs[0])
+  plt.xticks(np.arange(0, 10, 1))
+
+
+  plt.subplot(1, 2, 2)
+  plt.title('"Normal" Likelihoods')
+  plt.xlabel('Class')
+  plt.ylabel('Likelihood')
+  plt.bar(range(10), norm_probs[0])
+  plt.xticks(np.arange(0, 10, 1))
+
+  plt.savefig('.\webapp\static\plot.png')
+  """
   return X
 
   
