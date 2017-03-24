@@ -36,11 +36,10 @@
           -->
           <a class="navbar-brand" href="#">Adversarial Playground</a>
         </div>
-        <!--
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="about.html">About</a></li>
+            <li><a href="index">Jacobian Saliency Map</a></li>
+            <li class="active"><a href="l_inf">Fast Gradient Sign</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -49,7 +48,7 @@
     <div class="container">
 
       <div class="starter-template">
-        <h1>Visualize Attack Models!</h1>
+        <h1>Fast Gradient Sign Models</h1>
         <p class="lead">Use controls on right update and view generated adversarial sample.</p>
       </div>
       <div class="row">
@@ -76,8 +75,32 @@
                 <input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="0" 
                   data-slider-max="1" data-slider-step="0.01" data-slider-value="0.50" />
               </p>
+              <p> <strong> Source Class: </strong>
+                <select id="sampleNum">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="0">0</option>
+                </select>
               <p class="text-right">
                 <button type="button" class=btn btn-default>Update Model</button>
+              </p>
+            </div>
+        </div>
+        
+        <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class = "panel-title">Adversary Class</h3>
+            </div>
+            <div class="panel-body">
+              <p class="text-center" id="classParagraph">
+                (Update Model)
               </p>
             </div>
         </div>
@@ -102,16 +125,20 @@
           /* Request the python script to run */
           $("button").click(function(){
             var slider_val = mySlider.slider('getValue');
+            var srcDropdown = document.getElementById("sampleNum");
+            var srcClass = srcDropdown.options[srcDropdown.selectedIndex].value;
+            var classParagraph = document.getElementById("classParagraph");
             $.post("run_adversary",
             {
               model_name    : "Linf",
               epsilon_value : slider_val,
+              sample        : srcClass
             },
             function(data,status){
-              document.getElementById('vizpanel').src="{{ url_for('static', filename='comparison.png')}}";
-              //document.getElementById('pltpanel').src="{{ url_for('static', filename='plot.png')}}";
-
-            });
+              document.getElementById('vizpanel').src="{{ url_for('static', filename='comparison2.png')}}?"+new Date().getTime();
+              document.getElementById('pltpanel').src="{{ url_for('static', filename='FGSA_likelihoods.png')}}?"+new Date().getTime();
+              classParagraph.innerHTML = "<strong>" + data['adversary_class'] + "</strong>";
+            }, "json");
           });
       });
     </script>

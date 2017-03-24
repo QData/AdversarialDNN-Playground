@@ -36,11 +36,11 @@
           -->
           <a class="navbar-brand" href="#">Adversarial Playground</a>
         </div>
-        <!--
+        
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="about.html">About</a></li>
+            <li class="active"><a href="index">Jacobian Saliency Map</a></li>
+            <li><a href="l_inf">Fast Gradient Sign</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -49,7 +49,7 @@
     <div class="container">
 
       <div class="starter-template">
-        <h1>Visualize Attack Models!</h1>
+        <h1>Jacobian Saliency Map Approach</h1>
         <p class="lead">Use controls on right update and view generated adversarial sample.</p>
       </div>
       <div class="row">
@@ -75,6 +75,34 @@
               <p> <strong>Upsilon Parameter:</strong>
                 <input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="0" 
                   data-slider-max="1" data-slider-step="0.01" data-slider-value="0.50" />
+              </p>
+              <p> <strong> Source Class: </strong>
+                <select id="sampleNum">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="0">0</option>
+                </select>
+              </p>
+              <p> <strong> Target Class: </strong>
+                <select id="targetNum">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="0">0</option>
+                </select>
               </p>
               <p class="text-right">
                 <button type="button" class=btn btn-default>Update Model</button>
@@ -102,13 +130,19 @@
           /* Request the python script to run */
           $("button").click(function(){
             var slider_val = mySlider.slider('getValue');
+            var srcDropdown = document.getElementById("sampleNum");
+            var srcClass = srcDropdown.options[srcDropdown.selectedIndex].value;
+            var tgtDropdown = document.getElementById("targetNum");
+            var tgtClass = tgtDropdown.options[tgtDropdown.selectedIndex].value;
             $.post("run_adversary",
             {
               model_name    : "L1",
               upsilon_value : slider_val,
+              sample        : srcClass,
+              target        : tgtClass
             },
             function(data,status){
-              document.getElementById('vizpanel').src="{{ url_for('static', filename='comparison.png')}}";
+              document.getElementById('vizpanel').src="{{ url_for('static', filename='comparison.png')}}?"+new Date().getTime();
               //document.getElementById('pltpanel').src="{{ url_for('static', filename='plot.png')}}";
 
             });

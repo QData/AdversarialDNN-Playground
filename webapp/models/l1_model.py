@@ -93,11 +93,11 @@ def l1_attack(source_class, target_class, max_distortion):
   plt.subplot(1, 2, 1)
 
   plt.title('Adversarial Input')
-  plt.imshow(np.reshape(X, (28, 28)))
+  plt.imshow(np.reshape(X, (28, 28)), cmap='gray', vmin=0, vmax=1)
 
   plt.subplot(1, 2, 2)
   plt.title('Normal Input')
-  plt.imshow(np.reshape(orig, (28, 28)))
+  plt.imshow(np.reshape(orig, (28, 28)), cmap='gray', vmin=0, vmax=1)
   
   plt.savefig('.\webapp\static\comparison.png')
   """

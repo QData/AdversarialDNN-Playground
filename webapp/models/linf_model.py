@@ -35,6 +35,8 @@ def fgsm(source_class, epsilon):
     F         = tf.get_collection('mnist')[3]
     loss      = tf.get_collection('mnist')[5]
     epsilon   = float(epsilon)
+    print(epsilon)
+    orig = np.array(mnist_data[source_class], ndmin=2)
     
     # Compute loss
     y = tf.to_float(tf.equal(F, tf.reduce_max(F, 1, keep_dims=True)))
@@ -58,9 +60,43 @@ def fgsm(source_class, epsilon):
 
     normal_classification = np.zeros((1,10))
     normal_classification[0,int(source_class)] = 1
-    adv = adv_x.eval(feed_dict={x:np.array(mnist_data[source_class], ndmin=2), keep_prob:1.0, y_:normal_classification})
-    print(adv)
-    return adv
+    adv = adv_x.eval(feed_dict={x:orig, keep_prob:1.0, y_:normal_classification})
+    
+    ### Create plot of sample comparisons ###
+    plt.figure(figsize=(7, 3))
+    plt.subplot(1, 2, 1)
+
+    plt.title('Adversarial Input')
+    print(adv.shape)
+    plt.imshow(np.reshape(adv, (28, 28)), cmap='gray', vmin=0, vmax=1)
+
+    plt.subplot(1, 2, 2)
+    plt.title('Normal Input')
+    plt.imshow(np.reshape(orig, (28, 28)), cmap='gray', vmin=0, vmax=1)
+    
+    plt.savefig('.\webapp\static\comparison2.png')
+    #print(adv)
+    
+    ### Create plot of relative likelihoods for each class ###
+    adv_probs  = F.eval(feed_dict={x:adv, keep_prob:1.0})[0]
+    norm_probs = F.eval(feed_dict={x:orig, keep_prob:1.0})[0]
+    
+    adv_scaled  = (adv_probs - adv_probs.min()) / adv_probs.ptp()
+    norm_scaled = (norm_probs - norm_probs.min()) / norm_probs.ptp()
+    
+    # Plot the rankings
+    plt.figure(figsize=(7, 3))
+    plt.subplot(1, 2, 1)
+    plt.bar(range(10), adv_scaled)
+    plt.xticks(np.arange(0, 10, 1))
+
+
+    plt.subplot(1, 2, 2)
+    plt.bar(range(10), norm_scaled)
+    plt.xticks(np.arange(0, 10, 1))
+
+    plt.savefig('.\webapp\static\FGSA_likelihoods.png')
+    return adv_probs.argmax()
     
 mnist_data = None
 

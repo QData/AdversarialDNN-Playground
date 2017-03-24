@@ -2,6 +2,8 @@ from webapp import app
 from flask import render_template, request
 from os import listdir
 
+import json
+
 from webapp.models import l1_model, linf_model
 
 @app.route('/')
@@ -25,9 +27,17 @@ def run_adversary():
   if model_name == 'L1':
     # Perform tensor flow request
     upsilon_value = request.form['upsilon_value']
-    l1_model.l1_attack('2', 7, upsilon_value)
+    sample_value  = request.form['sample']
+    target_value  = int(request.form['target'])
+    print('Performing the L1 attack from {} to {}'.format(sample_value, target_value))
+    l1_model.l1_attack(sample_value, target_value, upsilon_value)
+    return "Model:{}\nUpsilon:{}".format(request.form['model_name'], request.form['upsilon_value'])
   elif model_name =='Linf':
     epsilon_value = request.form['epsilon_value']
-    linf_model.fgsm('2', epsilon_value)
+    sample_value  = request.form['sample']
+    adversary_class = linf_model.fgsm(sample_value, epsilon_value)
     
-  return "Model:{}\nUpsilon:{}".format(request.form['model_name'], request.form['upsilon_value'])
+    print('New adversary is classified as {}'.format(adversary_class))
+    ret_val = {'adversary_class':str(adversary_class)}
+    return json.dumps(ret_val)
+    
