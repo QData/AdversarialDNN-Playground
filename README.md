@@ -20,11 +20,11 @@ Python Packages
 Relevant Python 3 packages:
   - numpy/scipy stack
   - tensorflow
-  - Flask ([A good Flask resource for the unfamiliar][2]--including me!)
+  - Flask ([A good Flask resource for the unfamiliar][flask-intro]--including me!)
 
 Use:
 ----
 
 Once you've downloaded the repo, run `python3 run.py` and navigate to `localhost:5000`.
   
-[1]: https://github.com/seiyria/bootstrap-slider/
+[flask-intro]: https://github.com/seiyria/bootstrap-slider/
