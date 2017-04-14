@@ -14,17 +14,19 @@ Framework
     - Future: Use Plottable + D3 for visualization, instead of image output from backend.
     
     
-Python Packages
----------------
+Installation
+------------
 
-Relevant Python 3 packages:
-  - numpy/scipy stack
-  - tensorflow
-  - Flask ([A good Flask resource for the unfamiliar][flask-intro]--including me!)
+The primary requirements for this package are Python 3 with Tensorflow version 1.0.1 or greater.  The `requirements.txt` file contains a listing of the required Python packages; to install all requirements, run the following:
+
+```
+pip3 -r install requirements.txt
+```
+
 
 Use:
 ----
 
-Once you've downloaded the repo, run `python3 run.py` and navigate to `localhost:5000`.
+Once you've downloaded the repo, run `python3 run.py` and navigate to `localhost:9000`.
   
 [flask-intro]: https://github.com/seiyria/bootstrap-slider/
