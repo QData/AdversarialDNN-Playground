@@ -7,7 +7,7 @@ import pandas as pd
 import os
 import math
 import json
-from itertools import permutations
+from itertools import permutations, combinations, product
 
 # Plotting
 import matplotlib
@@ -17,9 +17,10 @@ matplotlib.style.use('fivethirtyeight')
 def grad(F):
   x = tf.get_collection('mnist')[0]
   grad_list = [ tf.gradients(F[:,i], x)[0] for i in range(10) ] # List of gradient tensors
-  return tf.pack(grad_list, axis=2) # dimension = (?, 784, 10)
+  return tf.stack(grad_list, axis=2) # dimension = (?, 784, 10)
 
-def saliency_map(grad_F, X, t, feature_set):
+def slow_map(grad_F, X, t, feature_set):
+  print('using slow map')
   # Get the feed dict parameters we needed
   x = tf.get_collection('mnist')[0]
   keep_prob = tf.get_collection('mnist')[2]
@@ -30,36 +31,67 @@ def saliency_map(grad_F, X, t, feature_set):
   M_nolimits = 0
   p1_nolimits = None
   p2_nolimits = None
-  a = 0
+
   gF = grad_F.eval(feed_dict = {x:X, keep_prob:1.0})
-  for (p, q) in permutations(feature_set, 2):
-    alpha = gF[:, p, t] + gF[:, q, t]
-    beta  = np.zeros(shape=alpha.shape)
-    for j in range(10):
-      if j == t:
-        continue
-      beta += gF[:, p, j] + gF[:, q, j]
+  pixelSumGF = np.sum(gF, axis=2) # sum along the innermost axis
   
-    if alpha < 0 and beta > 0 and -alpha*beta > M:
-      (p1, p2) = (p, q)
-      M = -alpha*beta
+  for (p, q) in combinations(feature_set, 2):
+    alpha = gF[:, p, t] + gF[:, q, t]
+    beta = pixelSumGF[:,p] + pixelSumGF[:,q] - alpha
+
     if -alpha*beta > M:
       (p1_nolimits, p2_nolimits) = (p, q)
       M_nolimits = -alpha*beta
-    a += 1
+      if alpha < 0 and beta > 0:
+        (p1, p2) = (p, q)
+        M = -alpha*beta
+
   if p1 is None or p2 is None:
     return p1_nolimits, p2_nolimits
   else:
     return p1, p2
+    
+def fast_map(grad_F, x_adversary, t, feature_set):
+  print('Using fast map')
+  x = tf.get_collection('mnist')[0]
+  M = 0 # Max -alpha*beta
+  p1 = None
+  p2 = None
+  M_nolimits = 0
+  p1_nolimits = None
+  p2_nolimits = None
+  
+  gF = grad_F.eval(feed_dict = {x:x_adversary})
+  pixelSumGF = np.sum(gF, axis=2) # sum along the innermost axis
+
+  top_ct  = int(len(feature_set)*.1) # consider the top tenth of the feature set
+  best_p = sorted(feature_set, key=lambda p: gF[:, p, t])[:top_ct]
+  
+  for (p, q) in product(best_p, feature_set):
+      if p==q:
+          continue
+          
+      alpha = gF[:, p, t] + gF[:, q, t]
+      beta = pixelSumGF[:,p] + pixelSumGF[:,q] - alpha
       
-def l1_attack(source_class, target_class, max_distortion):
+      if alpha < 0 and beta > 0 and -alpha*beta > M:
+          (p1, p2) = (p, q)
+          M = -alpha*beta
+      if -alpha*beta > M:
+          (p1_nolimits, p2_nolimits) = (p, q)
+          M_nolimits = -alpha*beta
+  if p1 is None or p2 is None:
+      return p1_nolimits, p2_nolimits
+  else:
+      return p1, p2
+      
+def l1_attack(source_class, target_class, max_distortion, fast=False):
   # unpack the string parameters into non-string parameters, as needed
   max_distortion = float(max_distortion)
   
   # Get the feed dict parameters we needed
   x = tf.get_collection('mnist')[0]
   keep_prob = tf.get_collection('mnist')[2]
-
   
   X = np.array(mnist_data[source_class], ndmin=2)
   orig = np.copy(X)
@@ -74,6 +106,7 @@ def l1_attack(source_class, target_class, max_distortion):
   
   source_class = classify_op.eval(feed_dict={x:X, keep_prob:1.0})
   
+  saliency_map = fast_map if fast else slow_map
   while source_class != target_class and feature_set and curr_iter < max_iter:
     p1, p2 = saliency_map(gradF, X, target_class, feature_set)
     
@@ -99,31 +132,28 @@ def l1_attack(source_class, target_class, max_distortion):
   plt.title('Normal Input')
   plt.imshow(np.reshape(orig, (28, 28)), cmap='gray', vmin=0, vmax=1)
   
-  plt.savefig('.\webapp\static\comparison.png')
-  """
-  adv_probs = y_conv.eval(feed_dict={x:X_adversary, keep_prob:1.0})
-  norm_probs = y_conv.eval(feed_dict={x:X, keep_prob:1.0})
-
+  plt.savefig('./webapp/static/comparison.png')
+  
+  ### Create plot of relative likelihoods for each class ###
+  adv_probs  = F.eval(feed_dict={x:X})[0]
+  norm_probs = F.eval(feed_dict={x:orig})[0]
+  
+  adv_scaled  = (adv_probs - adv_probs.min()) / adv_probs.ptp()
+  norm_scaled = (norm_probs - norm_probs.min()) / norm_probs.ptp()
+  
   # Plot the rankings
-  plt.figure(figsize=(6, 4))
+  plt.figure(figsize=(7, 3))
   plt.subplot(1, 2, 1)
-  plt.title('Adversarial Likelihoods')
-  plt.xlabel('Class')
-  plt.ylabel('Likelihood')
-  plt.bar(range(10), adv_probs[0])
+  plt.bar(range(10), adv_scaled)
   plt.xticks(np.arange(0, 10, 1))
 
 
   plt.subplot(1, 2, 2)
-  plt.title('"Normal" Likelihoods')
-  plt.xlabel('Class')
-  plt.ylabel('Likelihood')
-  plt.bar(range(10), norm_probs[0])
+  plt.bar(range(10), norm_scaled)
   plt.xticks(np.arange(0, 10, 1))
 
-  plt.savefig('.\webapp\static\plot.png')
-  """
-  return X
+  plt.savefig('./webapp/static/jsma_likelihoods.png')
+  return source_class[0]
 
   
 mnist_data = None
@@ -134,7 +164,7 @@ def setup(mnist_filename):
   print('Setting up the L1 model with MNIST model at {}'.format(mnist_filename))
   sess = tf.InteractiveSession()
   new_saver = tf.train.import_meta_graph(mnist_filename)
-  new_saver.restore(sess, tf.train.latest_checkpoint('.\webapp\models'))
+  new_saver.restore(sess, tf.train.latest_checkpoint('./webapp/models'))
   
-  with open('.\webapp\models\mnist_selection.json') as f:
+  with open('./webapp/models/mnist_selection.json') as f:
     mnist_data = json.load(f)

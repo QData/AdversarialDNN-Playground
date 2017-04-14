@@ -51,7 +51,7 @@ def train_and_save_model(filename):
   
 
   # Set up training criterion
-  cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(y_conv, y_))
+  cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=y_conv, labels=y_))
   train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
   
   # Initializer step

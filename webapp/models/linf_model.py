@@ -74,7 +74,7 @@ def fgsm(source_class, epsilon):
     plt.title('Normal Input')
     plt.imshow(np.reshape(orig, (28, 28)), cmap='gray', vmin=0, vmax=1)
     
-    plt.savefig('.\webapp\static\comparison2.png')
+    plt.savefig('./webapp/static/comparison2.png')
     #print(adv)
     
     ### Create plot of relative likelihoods for each class ###
@@ -95,7 +95,7 @@ def fgsm(source_class, epsilon):
     plt.bar(range(10), norm_scaled)
     plt.xticks(np.arange(0, 10, 1))
 
-    plt.savefig('.\webapp\static\FGSA_likelihoods.png')
+    plt.savefig('./webapp/static/FGSA_likelihoods.png')
     return adv_probs.argmax()
     
 mnist_data = None
@@ -106,8 +106,8 @@ def setup(mnist_filename):
   print('Setting up the L1 model with MNIST model at {}'.format(mnist_filename))
   sess = tf.InteractiveSession()
   new_saver = tf.train.import_meta_graph(mnist_filename)
-  new_saver.restore(sess, tf.train.latest_checkpoint('.\webapp\models'))
+  new_saver.restore(sess, tf.train.latest_checkpoint('./webapp/models'))
   
-  with open('.\webapp\models\mnist_selection.json') as f:
+  with open('./webapp/models/mnist_selection.json') as f:
     mnist_data = json.load(f)
     
