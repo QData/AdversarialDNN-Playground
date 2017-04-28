@@ -9,9 +9,13 @@ from webapp.models import l1_model, linf_model
 @app.route('/')
 @app.route('/index')
 def index():
+  return render_template('index.html', title='Home')
+
+@app.route('/jsma')
+def jsma():
   mnist_filename='./webapp/models/mnist-model.meta'
   l1_model.setup(mnist_filename)
-  return render_template('index.html', title='Home')
+  return render_template('jsma.html', title='JSMA')
   
 @app.route('/l_inf')
 def l_inf():

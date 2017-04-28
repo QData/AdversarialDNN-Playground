@@ -34,12 +34,12 @@
             <span class="icon-bar"></span>
           </button>
           -->
-          <a class="navbar-brand" href="#">Adversarial Playground</a>
+          <a class="navbar-brand" href="index">Adversarial Playground</a>
         </div>
         
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="index">Jacobian Saliency Map</a></li>
+            <li><a href="jsma">Jacobian Saliency Map</a></li>
             <li><a href="fjsma">Fast Jacobian Saliency Map</a></li>
             <!-- <li><a href="fjsma">Fast Jacobian Saliency Map</a></li> -->
             <li><a href="l_inf">Fast Gradient Sign</a></li>
@@ -51,73 +51,27 @@
     <div class="container">
 
       <div class="starter-template">
-        <h1>Jacobian Saliency Map Approach</h1>
-        <p class="lead">Use controls on right update and view generated adversarial sample.</p>
+        <h1>Adversarial DNN Playground</h1>
       </div>
       <div class="row">
-      
         <div class="col-md-8">
           <div class="panel panel-default">
               <div class="panel-heading">
-                <h3 class = "panel-title">System output</h3>
+                <h3 class = "panel-title">About</h3>
               </div>
               <div class="panel-body">
-                <img id="vizpanel" />
-                <img id="pltpanel" />
+                Content here (TBD).
               </div>
           </div>
-          
         </div>
         <div class="col-md-4">
           <div class="panel panel-default">
             <div class="panel-heading">
-              <h3 class = "panel-title">Hyperparameter configuration</h3>
+              <h3 class = "panel-title">QData Lab</h3>
             </div>
             <div class="panel-body">
-              <p> <strong>Upsilon Parameter:</strong>
-                <input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="0" 
-                  data-slider-max="1" data-slider-step="0.01" data-slider-value="0.50" />
-              </p>
-              <p> <strong> Source Class: </strong>
-                <select id="sampleNum">
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8</option>
-                  <option value="9">9</option>
-                  <option value="0">0</option>
-                </select>
-              </p>
-              <p> <strong> Target Class: </strong>
-                <select id="targetNum">
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8</option>
-                  <option value="9">9</option>
-                  <option value="0">0</option>
-                </select>
-              </p>
-              <p class="text-right">
-                <button type="button" class=btn btn-default>Update Model</button>
-              </p>
-            </div>
-          </div>
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h3 class = "panel-title">Adversary Class</h3>
-            </div>
-            <div class="panel-body">
-              <p class="text-center" id="classParagraph">
-                (Update Model)
+              <p>
+                Information about the QData labs.
               </p>
             </div>
           </div>

@@ -39,8 +39,8 @@
         
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><a href="jsma">Jacobian Saliency Map</a></li>
-            <li class="active"><a href="fjsma">Fast Jacobian Saliency Map</a></li>
+            <li class="active"><a href="jsma">Jacobian Saliency Map</a></li>
+            <li><a href="fjsma">Fast Jacobian Saliency Map</a></li>
             <!-- <li><a href="fjsma">Fast Jacobian Saliency Map</a></li> -->
             <li><a href="l_inf">Fast Gradient Sign</a></li>
           </ul>
@@ -51,7 +51,7 @@
     <div class="container">
 
       <div class="starter-template">
-        <h1>Fast Jacobian Saliency Map Approach</h1>
+        <h1>Jacobian Saliency Map Approach</h1>
         <p class="lead">Use controls on right update and view generated adversarial sample.</p>
       </div>
       <div class="row">
@@ -110,7 +110,7 @@
                 <button type="button" class=btn btn-default>Update Model</button>
               </p>
             </div>
-        </div>
+          </div>
           <div class="panel panel-default">
             <div class="panel-heading">
               <h3 class = "panel-title">Adversary Class</h3>
@@ -149,7 +149,7 @@
             var tgtClass = tgtDropdown.options[tgtDropdown.selectedIndex].value;
             $.post("run_adversary",
             {
-              model_name    : "fjsma",
+              model_name    : "L1",
               upsilon_value : slider_val,
               sample        : srcClass,
               target        : tgtClass
