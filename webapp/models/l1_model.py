@@ -121,18 +121,6 @@ def l1_attack(source_class, target_class, max_distortion, fast=False):
     if (curr_iter % 10 == 0):
       print(curr_iter)
   print('Finished {} iterations.'.format(curr_iter))
-  print('Writing to file')
-  plt.figure(figsize=(6, 4))
-  plt.subplot(1, 2, 1)
-
-  plt.title('Adversarial Input')
-  plt.imshow(np.reshape(X, (28, 28)), cmap='gray', vmin=0, vmax=1)
-
-  plt.subplot(1, 2, 2)
-  plt.title('Normal Input')
-  plt.imshow(np.reshape(orig, (28, 28)), cmap='gray', vmin=0, vmax=1)
-  
-  plt.savefig('./webapp/static/comparison.png')
   
   ### Create plot of relative likelihoods for each class ###
   adv_probs  = F.eval(feed_dict={x:X})[0]
@@ -140,20 +128,8 @@ def l1_attack(source_class, target_class, max_distortion, fast=False):
   
   adv_scaled  = (adv_probs - adv_probs.min()) / adv_probs.ptp()
   norm_scaled = (norm_probs - norm_probs.min()) / norm_probs.ptp()
-  
-  # Plot the rankings
-  plt.figure(figsize=(7, 3))
-  plt.subplot(1, 2, 1)
-  plt.bar(range(10), adv_scaled)
-  plt.xticks(np.arange(0, 10, 1))
 
-
-  plt.subplot(1, 2, 2)
-  plt.bar(range(10), norm_scaled)
-  plt.xticks(np.arange(0, 10, 1))
-
-  plt.savefig('./webapp/static/jsma_likelihoods.png')
-  return source_class[0]
+  return source_class[0], np.reshape(X, (28, 28)), adv_probs
 
   
 mnist_data = None

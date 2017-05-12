@@ -1,6 +1,10 @@
 Adversarial DNN Playground
 ==========================
 
+Reference Paper: 
+
+
+
 This is Andrew Norton's capstone research directory.  The goal is to perform a similar function to Google's Neural Network Playground, but with adversarial models.  It is a web service that enables the user to visualize the creation of adversarial samples to neural networks.
 
 Framework
@@ -10,7 +14,7 @@ Framework
     - Integration with cleverhans is also possible
   - Front-end using JQuery and Bootstrap
     - Bootstrap for static visuals
-      - Used Seiyria's [Bootstrap slider][1]
+      - Used Seiyria's [Bootstrap slider][bootstrap-slider]
     - Future: Use Plottable + D3 for visualization, instead of image output from backend.
     
     
@@ -29,4 +33,17 @@ Use:
 
 Once you've downloaded the repo, run `python3 run.py` and navigate to `localhost:9000`.
   
-[flask-intro]: https://github.com/seiyria/bootstrap-slider/
+
+Citation:
+---------
+
+
+```
+@article{norton2017advplayground,
+  title={Adversarial Playground: A Visualization Suite for Adversarial Sample Generation},
+  author={Norton, Andrew and Qi, Yanjun},
+  year={2017},
+}
+```
+
+[bootstrap-slider]: https://github.com/seiyria/bootstrap-slider

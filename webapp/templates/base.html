@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="Andrew Norton (QData group at UVA)">
+    <!-- <link rel="icon" href="../../favicon.ico"> -->
+
+    <title>{{ title }} - Adversarial Playground</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ url_for('static', filename='bs/css/bootstrap.min.css')}}" rel="stylesheet">
+
+    <!-- Bootstrap slider CSS -->
+    <link href="{{ url_for('static', filename='bootstrap-slider.min.css')}}" rel="stylesheet">
+
+    
+    <!-- Custom styles for this template -->
+    <link href="{{ url_for('static', filename='custom.css') }}" rel="stylesheet">
+
+    <!-- Plotly! -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <!--<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          -->
+          <a class="navbar-brand" href="index">Adversarial Playground</a>
+        </div>
+        
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="{% block jsma_current %}{% endblock %}"><a href="jsma">Jacobian Saliency Map</a></li>
+            <li class="{% block fjsma_current %}{% endblock %}"><a href="fjsma">Fast Jacobian Saliency Map</a></li>
+            <li class="{% block fgs_current %}{% endblock %}"><a href="l_inf">Fast Gradient Sign</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <div class="starter-template">
+        {% block title_information %}
+        {% endblock %}
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="panel panel-default"> <!-- Normal sample -->
+              <div class="row">
+                <div class="col-xs-6">
+                  <h3>Original Sample</strong>
+                  <div id="orig-sample"></div>
+                </div> 
+                <div class="col-xs-6">
+                  <h3>Adversarial Sample</strong>
+                  <div id="adv-sample"></div>
+                </div>
+              </div><!-- end of row 1 -->
+              <div class="row">
+                <div class="col-xs-6">
+                  <h3>Original Classification</strong>
+                  <div id="orig-likelihoods"></div>
+                </div>
+                <div class="col-xs-6">
+                  <h3>Adversarial Classifications</strong>
+                  <div id="adv-likelihoods"></div>
+                </div>
+              </div> <!-- end of row 2 -->
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class = "panel-title">Hyperparameter configuration</h3>
+            </div>
+            <div class="panel-body">
+              <p> <strong>{% block attack_param_name %}{% endblock %} Parameter:</strong>
+                <input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="0" 
+                  data-slider-max="1" data-slider-step="0.01" data-slider-value="0.50" />
+              </p>
+              <p> <strong> Source Class: </strong>
+                <select id="sampleNum">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="0">0</option>
+                </select>
+              </p>
+              {% if targeted %}
+              <p> <strong> Target Class: </strong>
+                <select id="targetNum">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="0">0</option>
+                </select>
+              </p>
+              {% endif %}
+              <p class="text-right">
+                <button type="button" class=btn btn-default>Generate Adversarial Sample</button>
+              </p>
+            </div>
+        </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class = "panel-title">Adversary Class</h3>
+            </div>
+            <div class="panel-body">
+              <p class="text-center" id="classParagraph">
+                (Update Model to view class)
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>
+    var plot_layout = {
+        margin: {
+          l: 25,
+          r: 25,
+          b: 25,
+          t: 25,
+          pad: 2
+        }
+      };
+    var chart_layout = {
+        margin: {
+          l: 25,
+          r: 25,
+          b: 25,
+          t: 25,
+          pad: 2
+        },
+        xaxis: {
+          dtick:1
+        }
+      };
+
+      function plotNormalSample() {
+        var srcDropdown = document.getElementById("sampleNum");
+        var srcClass = srcDropdown.options[srcDropdown.selectedIndex].value;
+
+        $.post("get_normal", {sample_id:srcClass},
+        function(data, status){
+          Plotly.newPlot('orig-sample', data['image_data'], plot_layout);
+          Plotly.newPlot('orig-likelihoods', data['likelihood_data'], chart_layout);
+        }, "json");
+      }
+
+      $(document).ready(function(){     
+          /* Slider for Upsilon */
+          var mySlider = $('#ex1').slider()
+          plotNormalSample(); // Plot the "1" at the start
+
+          $("#sampleNum").change(function(){plotNormalSample();});
+
+          /* Request the python script to run */
+          $("button").click(function(){
+            var slider_val = mySlider.slider('getValue');
+            var srcDropdown = document.getElementById("sampleNum");
+            var srcClass = srcDropdown.options[srcDropdown.selectedIndex].value;
+
+            {% if targeted %}
+            var tgtDropdown = document.getElementById("targetNum");
+            var tgtClass = tgtDropdown.options[tgtDropdown.selectedIndex].value;
+            {% endif %}
+
+            $.post("run_adversary",
+            {
+              model_name    : "{{model_name}}",
+              attack_param  : slider_val,
+              sample        : srcClass,
+              {% if targeted %}
+              target        : tgtClass
+              {% endif %}
+            },
+            function(data,status){
+              classParagraph.innerHTML = "<h3>" + data['adversary_class'] + "</h3>";
+              Plotly.newPlot('adv-sample', data['image_data'], plot_layout);
+              Plotly.newPlot('adv-likelihoods', data['likelihood_data'], chart_layout);
+              console.log(data['image_data']);
+            }, "json");
+          });
+      });
+
+    </script>
+    
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="{{ url_for('static', filename='bs/js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap-slider.min.js') }}"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <!--<script src="{{ url_for('static', filename='bs/js/ie10-viewport-bug-workaround.js')}}"></script>-->
+  </body>
+</html>
