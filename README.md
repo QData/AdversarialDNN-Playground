@@ -27,6 +27,12 @@ The primary requirements for this package are Python 3 with Tensorflow version 1
 pip3 -r install requirements.txt
 ```
 
+With Mac verison of pip, this should be:
+
+```
+pip3 install -r requirements.txt
+```
+
 
 Use:
 ----
