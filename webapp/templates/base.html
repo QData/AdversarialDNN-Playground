@@ -153,7 +153,7 @@
           b: 25,
           t: 25,
           pad: 2
-        }
+        },
       };
     var chart_layout = {
         margin: {
@@ -164,8 +164,16 @@
           pad: 2
         },
         xaxis: {
+          // title: 'Class',
           dtick:1
-        }
+        },
+        yaxis: {
+         // title: 'Score',
+         range: [-10, 20],
+         showgrid: false,
+         zeroline: false
+        },
+
       };
 
       function plotNormalSample() {
@@ -180,7 +188,7 @@
       }
 
       $(document).ready(function(){     
-          /* Slider for Upsilon */
+          /* Slider for Epsilon */
           var mySlider = $('#ex1').slider()
           plotNormalSample(); // Plot the "1" at the start
 
