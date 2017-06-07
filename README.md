@@ -48,6 +48,7 @@ Citation:
 @article{norton2017advplayground,
   title={Adversarial Playground: A Visualization Suite for Adversarial Sample Generation},
   author={Norton, Andrew and Qi, Yanjun},
+  url = {http://arxiv.org/abs/1706.01763}
   year={2017},
 }
 ```
