@@ -3,7 +3,7 @@ Adversarial DNN Playground
 
 Reference Paper: 
 
-
+"Adversarial Playground: A Visualization Suite for Adversarial Sample Generation", Norton, Andrew and Qi, Yanjun, [http://arxiv.org/abs/1706.01763]
 
 This is Andrew Norton's capstone research directory.  The goal is to perform a similar function to Google's Neural Network Playground, but with adversarial models.  It is a web service that enables the user to visualize the creation of adversarial samples to neural networks.
 
