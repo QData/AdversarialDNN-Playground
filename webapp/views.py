@@ -5,7 +5,10 @@ from os import listdir
 import json
 import numpy as np
 
-from webapp.models import l1_model, linf_model
+from webapp.models import l0_model, linf_model
+
+with open('./webapp/models/seeds.json') as f:
+  mnist_data = json.load(f)
 
 @app.route('/')
 @app.route('/index')
@@ -16,11 +19,12 @@ def index():
 @app.route('/jsma')
 def jsma():
   mnist_filename='./webapp/models/mnist-model.meta'
-  l1_model.setup(mnist_filename)
+  l0_model.setup(mnist_filename)
   return render_template('jsma.html', 
       title='JSMA',
       model_name="jsma",
-      targeted=True)
+      targeted=True,
+      display_names=sorted(mnist_data.keys()))
   
 @app.route('/l_inf')
 def l_inf():
@@ -28,44 +32,47 @@ def l_inf():
   linf_model.setup(mnist_filename)
   return render_template('fastgradientsign.html', 
       title='L_infinity Norm', 
-      model_name="Linf")
+      model_name="Linf",
+      display_names=sorted(mnist_data.keys()))
   
 @app.route('/fjsma')
 def fjsma_handler():
   mnist_filename='./webapp/models/mnist-model.meta'
-  l1_model.setup(mnist_filename)
+  l0_model.setup(mnist_filename)
   return render_template('fjsma.html', 
       title='FJSMA', 
       model_name="fjsma", 
-      targeted=True)
+      targeted=True,
+      display_names=sorted(mnist_data.keys()))
   
 @app.route('/run_adversary', methods=['POST'])
 def run_adversary():
   print('Starting adversary generation')
   model_name    = request.form['model_name']
+
+  seed_image    = np.array(mnist_data[request.form['sample']]['image'], ndmin=2)
+  seed_class    = int(mnist_data[request.form['sample']]['class'])
   print(model_name)
   
   if model_name == 'jsma':
     # Perform tensor flow request
     upsilon_value = request.form['attack_param']
-    sample_value  = request.form['sample']
     target_value  = int(request.form['target'])
-    print('Performing the L1 attack from {} to {}'.format(sample_value, target_value))
-    adversary_class, adv_example, adv_likelihoods = l1_model.l1_attack(sample_value, target_value, upsilon_value)
+    print('Performing the jsma L0 attack from {} to {}'.format(seed_class, target_value))
+    adversary_class, adv_example, adv_likelihoods = l0_model.attack(seed_image, target_value, upsilon_value)
     #return "Model:{}\nUpsilon:{}".format(request.form['model_name'], request.form['upsilon_value'])
   if model_name == 'fjsma':
     # Perform tensor flow request
     upsilon_value = request.form['attack_param']
-    sample_value  = request.form['sample']
     target_value  = int(request.form['target'])
-    print('Performing the fjsma L1 attack from {} to {}'.format(sample_value, target_value))
+    print('Performing the fjsma L0 attack from {} to {}'.format(seed_class, target_value))
 
-    adversary_class, adv_example, adv_likelihoods = l1_model.l1_attack(sample_value, target_value, upsilon_value, fast=True)
+    adversary_class, adv_example, adv_likelihoods = l0_model.attack(seed_image, target_value, upsilon_value, fast=True)
+    print('hi')
 
   elif model_name =='Linf':
     epsilon_value = request.form['attack_param']
-    sample_value  = request.form['sample']
-    adversary_class, adv_example, adv_likelihoods = linf_model.fgsm(sample_value, epsilon_value)
+    adversary_class, adv_example, adv_likelihoods = linf_model.fgsm(seed_image, seed_class, epsilon_value)
     
   print('New adversary is classified as {}'.format(adversary_class))
   ret_val = {
@@ -100,7 +107,7 @@ def run_adversary():
 def normal_sample():
   sample_id = request.form['sample_id']
 
-  with open('./webapp/models/mnist_selection2.json') as f:
+  with open('./webapp/models/seeds.json') as f:
     mnist_data = json.load(f)
 
   orig = np.array(mnist_data[sample_id]['image'], ndmin=2).reshape((28, 28))

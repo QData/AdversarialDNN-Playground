@@ -92,17 +92,10 @@
                   data-slider-max="1" data-slider-step="0.01" data-slider-value="0.50" />
               </p>
               <p> <strong> Source Class: </strong>
-                <select id="sampleNum">
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8</option>
-                  <option value="9">9</option>
-                  <option value="0">0</option>
+                <select id="seedNames">
+                  {% for display_name in display_names %}
+                    <option value="{{display_name}}">{{display_name}}</option>
+                  {% endfor %}
                 </select>
               </p>
               {% if targeted %}
@@ -169,7 +162,7 @@
       };
 
       function plotNormalSample() {
-        var srcDropdown = document.getElementById("sampleNum");
+        var srcDropdown = document.getElementById("seedNames");
         var srcClass = srcDropdown.options[srcDropdown.selectedIndex].value;
 
         $.post("get_normal", {sample_id:srcClass},
@@ -184,12 +177,12 @@
           var mySlider = $('#ex1').slider()
           plotNormalSample(); // Plot the "1" at the start
 
-          $("#sampleNum").change(function(){plotNormalSample();});
+          $("#seedNames").change(function(){plotNormalSample();});
 
           /* Request the python script to run */
           $("button").click(function(){
             var slider_val = mySlider.slider('getValue');
-            var srcDropdown = document.getElementById("sampleNum");
+            var srcDropdown = document.getElementById("seedNames");
             var srcClass = srcDropdown.options[srcDropdown.selectedIndex].value;
 
             {% if targeted %}

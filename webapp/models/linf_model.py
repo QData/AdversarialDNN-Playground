@@ -9,15 +9,9 @@ import math
 import json
 from itertools import permutations
 
-# Plotting
-import matplotlib
-import matplotlib.pyplot as plt
-matplotlib.style.use('fivethirtyeight')
-
-
 # Altered from Cleverhans
 # (Github: https://github.com/openai/cleverhans)
-def fgsm(source_class, epsilon):
+def fgsm(seed_image, seed_class, epsilon):
     """
     TensorFlow implementation of the Fast Gradient
     Sign method.
@@ -37,7 +31,7 @@ def fgsm(source_class, epsilon):
     F         = tf.get_collection('mnist')[3]
     loss      = tf.get_collection('mnist')[5]
     epsilon   = float(epsilon)
-    orig = np.array(mnist_data[source_class], ndmin=2)
+    orig = seed_image
     
     # Compute loss
     y = tf.to_float(tf.equal(F, tf.reduce_max(F, 1, keep_dims=True)))
@@ -58,7 +52,7 @@ def fgsm(source_class, epsilon):
     adv_x = tf.clip_by_value(adv_x, 0, 1) # clip to [0,1]
 
     normal_classification = np.zeros((1,10))
-    normal_classification[0,int(source_class)] = 1
+    normal_classification[0,int(seed_class)] = 1
     adv = adv_x.eval(feed_dict={x:orig, keep_prob:1.0, y_:normal_classification})
     
     ### Create plot of relative likelihoods for each class ###
@@ -70,16 +64,9 @@ def fgsm(source_class, epsilon):
     
     return adv_probs.argmax(), np.reshape(adv, (28, 28)), adv_probs
     
-mnist_data = None
-
 def setup(mnist_filename):    
-  global mnist_data
   # Will run on import
   print('Setting up the L1 model with MNIST model at {}'.format(mnist_filename))
   sess = tf.InteractiveSession()
   new_saver = tf.train.import_meta_graph(mnist_filename)
   new_saver.restore(sess, tf.train.latest_checkpoint('./webapp/models'))
-  
-  with open('./webapp/models/mnist_selection.json') as f:
-    mnist_data = json.load(f)
-    

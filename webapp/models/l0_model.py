@@ -85,7 +85,7 @@ def fast_map(grad_F, x_adversary, t, feature_set):
   else:
       return p1, p2
       
-def l1_attack(source_class, target_class, max_distortion, fast=False):
+def attack(X, target_class, max_distortion, fast=False):
   # unpack the string parameters into non-string parameters, as needed
   max_distortion = float(max_distortion)
   
@@ -93,10 +93,9 @@ def l1_attack(source_class, target_class, max_distortion, fast=False):
   x = tf.get_collection('mnist')[0]
   keep_prob = tf.get_collection('mnist')[2]
   
-  X = np.array(mnist_data[source_class], ndmin=2)
   orig = np.copy(X)
   F = tf.get_collection('mnist')[3]
-  
+
   feature_set = {i for i in range(X.shape[1]) if X[0, i] != 0}
   curr_iter = 0
   max_iter = math.floor(784*max_distortion / 2)
@@ -105,6 +104,7 @@ def l1_attack(source_class, target_class, max_distortion, fast=False):
   gradF = grad(F)
   
   source_class = classify_op.eval(feed_dict={x:X, keep_prob:1.0})
+  print('Evaled first thing')
   
   saliency_map = fast_map if fast else slow_map
   while source_class != target_class and feature_set and curr_iter < max_iter:
@@ -142,5 +142,5 @@ def setup(mnist_filename):
   new_saver = tf.train.import_meta_graph(mnist_filename)
   new_saver.restore(sess, tf.train.latest_checkpoint('./webapp/models'))
   
-  with open('./webapp/models/mnist_selection.json') as f:
+  with open('./webapp/models/seeds.json') as f:
     mnist_data = json.load(f)
