@@ -2,11 +2,13 @@
 # Use:
 #  python json_gen.py images_to_generate.csv
 
+import os
 import csv               # reading input files
 import sys               # exit/commandline args
 import json              # output file
 import tensorflow as tf  # for classification
 from numpy import argmax # one-hot -> class label
+from scipy.misc import imsave # generating images 
 
 help_text = (  'This script generates the "seeds.json" file for use in the ' 
              + 'webapp, \nallowing a developer to select which images they\'d '
@@ -57,6 +59,10 @@ F = tf.get_collection('mnist')[3]
 print('  Loaded MNIST classifier...')
 print('  Starting to process images...')
 
+# Create directory for images
+if not os.path.exists('imgs'):
+  os.makedirs('imgs')
+
 # Create dictionary
 data_to_write = {}
 for num, curr_index in enumerate(indices):
@@ -77,6 +83,9 @@ for num, curr_index in enumerate(indices):
     }
 
   print('    Processed image {} (class={}; image {} of {})'.format(curr_index, curr_class, num+1, len(indices)))
+
+  imsave('imgs/{}.png'.format(display_name), curr_image.reshape((28,28)))
+  
 
 print('  Finished all images...')
 
