@@ -17,6 +17,9 @@
     <!-- Bootstrap slider CSS -->
     <link href="{{ url_for('static', filename='bootstrap-slider.min.css')}}" rel="stylesheet">
 
+    <!-- image picker css -->
+    <link href="{{ url_for('static', filename='image-picker/image-picker/image-picker.css')}}" rel="stylesheet" >
+
     
     <!-- Custom styles for this template -->
     <link href="{{ url_for('static', filename='custom.css') }}" rel="stylesheet">
@@ -91,16 +94,16 @@
                 <input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="0" 
                   data-slider-max="1" data-slider-step="0.01" data-slider-value="0.10" />
               </p>
-              <p> <strong> Source Class: </strong>
-                <select id="seedNames">
+              <p> <strong>Seed Image: </strong>
+                <select id="seedNames" class="image-picker">
                   {% for display_name in display_names %}
-                    <option value="{{display_name}}">{{display_name}}</option>
+                    <option data-img-src="{{ url_for('static', filename='imgs/' + display_name + '.png') }}" value="{{display_name}}">{{display_name}}</option>
                   {% endfor %}
                 </select>
               </p>
               {% if targeted %}
               <p> <strong> Target Class: </strong>
-                <select id="targetNum">
+                <select id="targetNum" class="form-control">
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
@@ -138,36 +141,41 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script>
-    var plot_layout = {
-        margin: {
-          l: 25,
-          r: 25,
-          b: 25,
-          t: 25,
-          pad: 2
-        },
-      };
-    var chart_layout = {
-        margin: {
-          l: 25,
-          r: 25,
-          b: 25,
-          t: 25,
-          pad: 2
-        },
-        xaxis: {
-          // title: 'Class',
-          dtick:1
-        },
-        yaxis: {
-         // title: 'Score',
-         range: [-10, 20],
-         showgrid: false,
-         zeroline: false
-        },
+    <script src="{{ url_for('static', filename='image-picker/image-picker/image-picker.min.js')}}"></script>
 
-      };
+    <script>
+      // Gotta get that image picker working
+      jQuery("select.image-picker").imagepicker({show_label:false});
+
+      var plot_layout = {
+          margin: {
+            l: 25,
+            r: 25,
+            b: 25,
+            t: 25,
+            pad: 2
+          },
+        };
+      var chart_layout = {
+          margin: {
+            l: 25,
+            r: 25,
+            b: 25,
+            t: 25,
+            pad: 2
+          },
+          xaxis: {
+            // title: 'Class',
+            dtick:1
+          },
+          yaxis: {
+           // title: 'Score',
+           range: [-10, 20],
+           showgrid: false,
+           zeroline: false
+          },
+
+        };
 
       function plotNormalSample() {
         var srcDropdown = document.getElementById("seedNames");
@@ -218,7 +226,6 @@
 
     </script>
     
-    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
     <script src="{{ url_for('static', filename='bs/js/bootstrap.min.js') }}"></script>
     <script src="{{ url_for('static', filename='bootstrap-slider.min.js') }}"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
