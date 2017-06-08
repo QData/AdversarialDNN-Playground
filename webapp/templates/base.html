@@ -84,12 +84,12 @@
         <div class="col-md-4">
           <div class="panel panel-default">
             <div class="panel-heading">
-              <h3 class = "panel-title">Hyperparameter configuration</h3>
+              <h3 class = "panel-title">Options</h3>
             </div>
             <div class="panel-body">
               <p> <strong>{% block attack_param_name %}{% endblock %} Parameter:</strong>
                 <input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="0" 
-                  data-slider-max="1" data-slider-step="0.01" data-slider-value="0.50" />
+                  data-slider-max="1" data-slider-step="0.01" data-slider-value="0.10" />
               </p>
               <p> <strong> Source Class: </strong>
                 <select id="seedNames">
@@ -146,7 +146,7 @@
           b: 25,
           t: 25,
           pad: 2
-        }
+        },
       };
     var chart_layout = {
         margin: {
@@ -157,8 +157,16 @@
           pad: 2
         },
         xaxis: {
+          // title: 'Class',
           dtick:1
-        }
+        },
+        yaxis: {
+         // title: 'Score',
+         range: [-10, 20],
+         showgrid: false,
+         zeroline: false
+        },
+
       };
 
       function plotNormalSample() {
@@ -173,7 +181,7 @@
       }
 
       $(document).ready(function(){     
-          /* Slider for Upsilon */
+          /* Slider for Epsilon */
           var mySlider = $('#ex1').slider()
           plotNormalSample(); // Plot the "1" at the start
 
