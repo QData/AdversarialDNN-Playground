@@ -38,6 +38,20 @@ Use:
 
 Once you've downloaded the repo, run `python3 run.py` and navigate to `localhost:9000`.
 
+### Modifying Seed Images
+By default, we give the user the option of 11 seed images (one from each class 0 through 9, and one misclassified instance from the "9" class).  However, you may desire to select different images for your own instance of this tool.  It is quite easy to do so via the `json_gen.py` script in the [`utils`](https://github.com/QData/AdversarialDNN-Playground/tree/master/utils) directory.  Edit the `images_to_generate.csv` file to specify the indices into the MNIST dataset which interest you in the first column, and provide a human readable description in the second column.
+
+After editing the `images_to_generate.csv` file, run:
+```
+$ python images_to_generate.csv
+```
+
+This will take a short amount of time, as it processes and classifies (using the pre-trained model) each seed image, and saves a `png` file of the image.  There are two items created as output, and they must be moved into proper locations in the `webapp` directories:
+  - `seeds.json` : This contains each image and the classifier output as a JSON object; it goes in `/webapp/models`. 
+  - `imgs/` : This directory should be copied into the `webapp/static/` directory.
+
+Run (or restart) the webserver, and the new options should be visible to the user.
+
 Framework
 ---------
   - Python `Flask`-based server
