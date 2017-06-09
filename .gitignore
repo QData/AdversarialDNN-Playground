@@ -2,3 +2,4 @@
 /webapp/static/*.png
 **__pycache__**
 *.pyc
+nohup.out

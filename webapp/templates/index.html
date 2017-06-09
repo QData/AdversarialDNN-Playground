@@ -16,6 +16,10 @@
 
     <!-- Custom styles for this template -->
     <link href="{{ url_for('static', filename='custom.css') }}" rel="stylesheet">
+
+    <!-- Fontawesome for GitHub icons -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+
   </head>
 
   <body>
@@ -53,25 +57,40 @@
         <div class="col-md-8">
           <div class="panel panel-default">
               <div class="panel-heading">
-                <h3 class = "panel-title">About</h3>
+                <h2 class = "panel-title">About</h2>
               </div>
               <div class="panel-body">
                 <p>
                 In recent years, Deep Neural Networks have become an essential tool for many machine learning tasks, especially image classification.  However, this has given rise to the study of <em>adversarial samples</em>--carefully crafted inputs for a neural network that result in an incorrect classification. 
                 </p>
                 <p>
-                In the spirit of the TensorFlow Playground, we present the Adversarial Playground: a web-based visualization tool to assist users in understanding the differences between common adversarial machine learning techniques.  Upon launch, the application starts a lightweight Python websever hosting a collection of pages related to the visualization.  The server-based nature allows remote hosting, but the webserver may be hosted on any computer running TensorFlow.
+                In the spirit of the TensorFlow Playground, we present the Adversarial Playground: a web-based visualization tool to assist users in understanding the differences between common adversarial machine learning techniques.  Upon launch, the application starts a lightweight Python webserver hosting a collection of pages related to the visualization.  The server-based nature allows remote hosting, but the webserver may be hosted on any computer running TensorFlow.
                 </p>
 
+                <h3>Usage</h3>
                 <p>
-                We allow multiple types of adversarial attacks:
+                We allow multiple types of adversarial attacks, accessible through the top navigation bar:
                   <ul>
                     <li>Jacobian Saliency Map Approach (JSMA)</li>
                     <li>Fast Jacobian Saliency Map Apriori (FJSMA) </li>
                     <li>Fast Gradient Sign</li>
                   </ul>
+
+                The first two approaches implement an L<sup>0</sup>-norm method based on the work in <em>Practical Black-Box Attacks against Machine Learning</em> by Papernot et al.<sup><a href="https://arxiv.org/abs/1511.07528" target="_blank">[1]</a></sup>; the first is a direct implementation of their work, while the latter is our own contribution -- an approximation to their algorithm that runs much faster, suitable for a web-based tool.  The third evasion approach is an L<sup>&infin;</sup>-based attack, following the common Fast Gradient Sign method.  This implementation was directly adapted from the Cleverhans toolkit, also by Papernot et al<sup><a href="https://arxiv.org/abs/1610.00768" target="_blank">[2]</a></sup>.
+                </p>
+                
+                <p>
+                  Once on the page for each evasion algorithm, you may select a seed image, adjust the attacking power, and select a target class (for targeted methods).  Once you have done so, the evasion algorithm is performed on-demand in real time, and the resulting graphic (and classification likelihoods) are displayed.
                 </p>
 
+                <h3>Design Choices</h3>
+                There are a variety of design choices we made that are relevant to the user; please refer to <a href="https://arxiv.org/abs/1706.01763" target="_blank">our paper</a> for more detailed information.
+
+                <h4>Seed Images</h4>
+                We made an arbitrary selection of 10 seed images, one from each class 0-9, which the user may select to start the attack.  We also included a misclassified sample from the "9" class that is resilient to feature squeezing (the sample from mentioned in Xu, et al's paper<sup><a href="https://arxiv.org/abs/1704.01155" target="_blank">[3]</a></sup>).  If the application has been configured locally, the selection of samples may be altered by running a simple Python script.  (See the <a href="https://github.com/QData/AdversarialDNN-Playground/blob/master/README.md">GitHub README</a> for more technical information.)
+
+                <h4>Client-side rendering</h4>
+                To reduce latency experienced by the user, we've utilized the Plotly.JS JavaScript library to render the images and plots on the client side.  However, this does require that you have JavaScript enabled to experience the full features of this software.  Please turn off NoScript or similar browser extensions to view the visualizations.
               </div>
           </div>
         </div>
@@ -88,7 +107,7 @@
           </div>
           <div class="panel panel-default">
             <div class="panel-heading">
-              <h3 class = "panel-title">Source code</h3>
+              <h3 class = "panel-title">Source code <i class="fa fa-github" aria-hidden="true"></i></h3>
             </div>
             <div class="panel-body">
               <p>
