@@ -27,6 +27,11 @@ If you are using Mac and the above does not work, use the following:
 pip3 install -r requirements.txt
 ```
 
+There are git submodules in this repository; to clone all the needed files, please use:
+
+```
+git clone --recursive git@github.com:QData/AdversarialDNN-Playground.git
+```
 
 Use:
 ----
