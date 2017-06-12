@@ -1,5 +1,4 @@
 /webapp/models/MNIST_data
-/webapp/static/*.png
 **__pycache__**
 *.pyc
 nohup.out

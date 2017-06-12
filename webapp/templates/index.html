@@ -76,12 +76,28 @@
                     <li>Fast Gradient Sign</li>
                   </ul>
 
-                The first two approaches implement an L<sup>0</sup>-norm method based on the work in <em>Practical Black-Box Attacks against Machine Learning</em> by Papernot et al.<sup><a href="https://arxiv.org/abs/1511.07528" target="_blank">[1]</a></sup>; the first is a direct implementation of their work, while the latter is our own contribution -- an approximation to their algorithm that runs much faster, suitable for a web-based tool.  The third evasion approach is an L<sup>&infin;</sup>-based attack, following the common Fast Gradient Sign method.  This implementation was directly adapted from the Cleverhans toolkit, also by Papernot et al<sup><a href="https://arxiv.org/abs/1610.00768" target="_blank">[2]</a></sup>.
+                The first two approaches implement an L<sup>0</sup>-norm method based on the work in <em>The Limitations of Deep Learning in Adversarial Settings</em> by Papernot et al.<sup><a href="https://arxiv.org/abs/1511.07528" target="_blank">[1]</a></sup>; the first is a direct implementation of their work, while the latter is our own contribution -- an approximation to their algorithm that runs much faster, suitable for a web-based tool.  The third evasion approach is an L<sup>&infin;</sup>-based attack, following the common Fast Gradient Sign method.  This implementation was directly adapted from the Cleverhans toolkit, also by Papernot et al<sup><a href="https://arxiv.org/abs/1610.00768" target="_blank">[2]</a></sup>.
                 </p>
                 
                 <p>
                   Once on the page for each evasion algorithm, you may select a seed image, adjust the attacking power, and select a target class (for targeted methods).  Once you have done so, the evasion algorithm is performed on-demand in real time, and the resulting graphic (and classification likelihoods) are displayed.
                 </p>
+
+                <h3>About the Attacks</h3>
+                <h4>Jacobian Saliency Map Approach (JSMA)</h4>
+                The core idea of this evasion algorithm is to modify pixels from the seed image that produce the greatest impact on the classification of the image.  This is done through the use of a <em>saliency map</em> -- a tool originally used for visualization.  After using the saliency map to determine the most impactful pixels, the adversary iteratively modifies pixels that <em>increase</em> the target classification likelihood while <em>suppressing</em> the likelihoods for all other classifications.  This process is repeated until either the modified image is in the target class, or the L<sup>0</sup> distance between the modified image and seed image exceeds a specified threshold.   For more information on the details of the algorithm, we refer the reader to Papernot et al<sup><a href="https://arxiv.org/abs/1511.07528" target="_blank">[1]</a></sup> mentioned above.
+
+                The modification to each pixel may take many forms; in this application, the one we apply is to set selected pixels to complete black.  (This, and its converse of setting selected pixels to pure white, is a relatively common implementation choice.)  Since we are minimizing the L<sup>0</sup> distance, there are very few pixels that are changed in this approach.  A typical example is below.  
+
+                <img src="{{ url_for('static', filename='jsma-attack.png') }}" class="img-responsive" alt="Example seed and adversarial sample" />
+
+                <h4>Fast Jacobian Saliency Map Apriori (FJSMA)</h4>
+                A disadvatage of the JSMA is that each iteration requires a combinatorial search of pairs of pixels.  A complete slows down the process on the server-side, which can lead to latency for users of this webapp.  We approximated the JSMA approach by greedily selecting a small proportion of the pairs of pixels.  This enables a faster response time from the server and less waiting for end-users, while still maintaining a comparable evasion rate.
+
+                <h4>Fast Gradient Sign</h4>
+                In this demonstration, we use an untargeted form of the Fast Gradient Sign method.  The core idea of this approach is to compute the gradient of the classifier to find the direction which will change the classification the most, then adjust the entire image by some small amount in that direction.  This is good for minimizing the L<sup>&infin;</sup> norm, but leads to the appearance of random noise covering the entire image.  A typical example is as below.
+                <img src="{{ url_for('static', filename='fgs-attack.png') }}" class="img-responsive" alt="Example seed and adversarial sample" />
+
 
                 <h3>Design Choices</h3>
                 There are a variety of design choices we made that are relevant to the user; please refer to <a href="https://arxiv.org/abs/1706.01763" target="_blank">our paper</a> for more detailed information.
