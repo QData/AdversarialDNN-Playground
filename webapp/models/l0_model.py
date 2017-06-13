@@ -50,7 +50,51 @@ def slow_map(grad_F, X, t, feature_set):
     return p1_nolimits, p2_nolimits
   else:
     return p1, p2
+
+# Uses the numpy functions for argmax like cleverhans
+def faster_map(grad_F, x_adversary, t, feature_set):
+  print('Using fastest map')
+  x = tf.get_collection('mnist')[0]
+
+  gF = grad_F.eval(feed_dict = {x:x_adversary}).squeeze()
+  num_raw_features = gF.shape[0]
+  target_vector = gF[:, t].reshape(num_raw_features)
+  other_vector  = np.sum(gF, axis=1).reshape(num_raw_features) - target_vector # Get sum of "all but target col"
+  
+  k = int(len(feature_set)*.25) # consider the top quarter of the feature set; magic number to match cleverhans
+  ordered_feature_set = sorted(feature_set, key=lambda x: target_vector[x])
+  best_pixels = ordered_feature_set[:k]
+  
+  num_features = len(feature_set)
+  
+  tV_best = target_vector[best_pixels].reshape((1, k))
+  oV_best = other_vector[best_pixels].reshape((1, k))
+  
+  tV_features = target_vector[ordered_feature_set].reshape((num_features, 1))
+  oV_features = target_vector[ordered_feature_set].reshape((num_features, 1))
+  
+  target_sum = tV_best + tV_features
+  other_sum  = oV_best + oV_features
+  #print(target_sum.shape)
+  
+  # heavily influenced by cleverhans
+  scores = -target_sum * other_sum
+  np.fill_diagonal(scores, 0)
+
+  scores_mask = ((target_sum < 0) & (other_sum > 0))
+  scores *= scores_mask
+
+  (p1_raw, p2_raw) = np.unravel_index(np.argmax(scores), scores.shape)
+  #print('The scores has shape {}'.format(scores.shape))
+  p1 = ordered_feature_set[p1_raw]
+  p2 = best_pixels[p2_raw]
+  if (p1 != p2):
+      return p1, p2
+  else:
+      return None, None
     
+# Original FJSMA implementation; does not use numpy to fullest advantage
+# Not used; preserved "just in case."  Remove later.
 def fast_map(grad_F, x_adversary, t, feature_set):
   print('Using fast map')
   x = tf.get_collection('mnist')[0]
@@ -106,7 +150,7 @@ def attack(X, target_class, max_distortion, fast=False):
   source_class = classify_op.eval(feed_dict={x:X, keep_prob:1.0})
   print('Evaled first thing')
   
-  saliency_map = fast_map if fast else slow_map
+  saliency_map = faster_map if fast else slow_map
   while source_class != target_class and feature_set and curr_iter < max_iter:
     p1, p2 = saliency_map(gradF, X, target_class, feature_set)
     
