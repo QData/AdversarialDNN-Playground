@@ -282,8 +282,8 @@ for i in range(num_to_generate):
 
   sample_start_time = time.time()
   if attack_type=='cleverhans':
-    X_adv, success, percent_changed = attacks_tf.jsma_tf(sess, x, y_conv, gradF, X, y_tgt, 1, 
-                                                         max_distortion/100, False, 0, 1)
+    X_adv, success, percent_changed = attacks_tf.jsma(sess, x, y_conv, gradF, X, y_tgt, -1, 
+                                                         max_distortion/100, 0, 1)
     iters = percent_changed * 784 / 2
   else:
     X_adv, iters, success = jsma(X, y_tgt, y_conv, gradF, checkpoints, 1, saliency_map, input_k)

@@ -10,7 +10,6 @@
 # Set env variable $EMAIL_ADDRESS to be notified when jobs complete
 
 ### CLEVERHANS EXPERIMENTS ###
-# Don't use right now; something broke in my cleverhans code
 cleverhans () {
   for x in 10 15 20 25; do
     echo "Doing iteration ${x} for cleverhans"
@@ -42,5 +41,5 @@ fjsma () {
 }
 
 ## EDIT DOWN HERE FOR WHICH TO RUN
-fjsma 5    # Run with k = 5% of feature set
-# cleverhans # Run cleverhans tests
+# fjsma 5    # Run with k = 5% of feature set
+cleverhans # Run cleverhans tests
