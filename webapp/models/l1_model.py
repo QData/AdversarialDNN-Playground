@@ -11,6 +11,7 @@ from itertools import permutations, combinations, product
 
 # Plotting
 import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 matplotlib.style.use('fivethirtyeight')
 
