@@ -10,10 +10,17 @@ This is Andrew Norton's capstone research work.  The goal is to perform a simila
 Screenshots and Demo
 --------------------
 
-We are hosting a live demo of the project at http://qdev2.cs.virginia.edu:9000.  Information regarding the various settings for each attack model may be found the [project slide set](https://github.com/QData/AdversarialDNN-Playground/blob/master/presentation.pdf) (see especially the *System Demonstration* section).
+Information regarding the various settings for each attack model may be found the [project slide set](https://github.com/QData/AdversarialDNN-Playground/blob/master/presentation.pdf) (see especially the *System Demonstration* section).
+
 
 Installation
 ------------
+
+There are git submodules in this repository; to clone all the needed files, please use:
+
+```
+git clone --recursive https://github.com/QData/AdversarialDNN-Playground.git
+```
 
 The primary requirements for this package are Python 3 with Tensorflow version 1.0.1 or greater.  The `requirements.txt` file contains a listing of the required Python packages; to install all requirements, run the following:
 
@@ -21,16 +28,15 @@ The primary requirements for this package are Python 3 with Tensorflow version 1
 pip3 -r install requirements.txt
 ```
 
-If you are using Mac and the above does not work, use the following:
+If the above command does not work, use the following:
 
 ```
 pip3 install -r requirements.txt
 ```
 
-There are git submodules in this repository; to clone all the needed files, please use:
-
+Or use the following instead if need to sudo:
 ```
-git clone --recursive https://github.com/QData/AdversarialDNN-Playground.git
+sudo -H pip  install -r requirements.txt
 ```
 
 Use:
