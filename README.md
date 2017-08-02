@@ -1,7 +1,7 @@
 Adversarial DNN Playground
 ==========================
 
-Reference Paper: 
+Reference Paper:
 
 "Adversarial Playground: A Visualization Suite for Adversarial Sample Generation", Norton, Andrew and Qi, Yanjun, http://arxiv.org/abs/1706.01763
 
@@ -11,7 +11,7 @@ Screenshots and Demo
 --------------------
 
 We are hosting a live demo of the project at http://qdev2.cs.virginia.edu:9000.  Information regarding the various settings for each attack model may be found the [project slide set](https://github.com/QData/AdversarialDNN-Playground/blob/master/presentation.pdf) (see especially the *System Demonstration* section).
-    
+
 Installation
 ------------
 
@@ -30,7 +30,7 @@ pip3 install -r requirements.txt
 There are git submodules in this repository; to clone all the needed files, please use:
 
 ```
-git clone --recursive git@github.com:QData/AdversarialDNN-Playground.git
+git clone --recursive https://github.com/QData/AdversarialDNN-Playground.git
 ```
 
 Use:
@@ -47,7 +47,7 @@ $ python images_to_generate.csv
 ```
 
 This will take a short amount of time, as it processes and classifies (using the pre-trained model) each seed image, and saves a `png` file of the image.  There are two items created as output, and they must be moved into proper locations in the `webapp` directories:
-  - `seeds.json` : This contains each image and the classifier output as a JSON object; it goes in `/webapp/models`. 
+  - `seeds.json` : This contains each image and the classifier output as a JSON object; it goes in `/webapp/models`.
   - `imgs/` : This directory should be copied into the `webapp/static/` directory.
 
 Run (or restart) the webserver, and the new options should be visible to the user.
