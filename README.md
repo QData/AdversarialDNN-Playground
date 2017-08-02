@@ -42,7 +42,22 @@ sudo -H pip  install -r requirements.txt
 Use:
 ----
 
-Once you've downloaded the repo, run `python3 run.py` and navigate to `localhost:9000`.
+### To Deploy the webserver:
+
+Once you've downloaded the repo, run `python3 run.py` :
+
+```
+$ cd AdversarialDNN-Playground-localDir
+$ python3 run.py &       
+```
+
+Or run the following command to run the webapp in the background even when logged out from the server:
+```
+$ cd AdversarialDNN-Playground-localDir
+$ nohup python3 run.py &        # run in background even when logged out
+```
+
+Now use your favorite explorer to navigate to `localhost:9000`  or 'your_server_url:9000'
 
 ### Modifying Seed Images
 By default, we give the user the option of 11 seed images (one from each class 0 through 9, and one misclassified instance from the "9" class).  However, you may desire to select different images for your own instance of this tool.  It is quite easy to do so via the `json_gen.py` script in the [`utils`](https://github.com/QData/AdversarialDNN-Playground/tree/master/utils) directory.  Edit the `images_to_generate.csv` file to specify the indices into the MNIST dataset which interest you in the first column, and provide a human readable description in the second column.
