@@ -1,11 +1,16 @@
 Adversarial DNN Playground
 ==========================
 
-Reference Paper:
+Reference Papers:
 
-"Adversarial Playground: A Visualization Suite for Adversarial Sample Generation", Norton, Andrew and Qi, Yanjun, http://arxiv.org/abs/1706.01763
+[1] "Adversarial-Playground: A Visualization Suite Showing How Adversarial
+  Examples Fool Deep Learning", Andrew P. Norton, Yanjun Qi, http://arxiv.org/abs/1708.00807 (this is a revised version of [1])
+
+[2] "Adversarial Playground: A Visualization Suite for Adversarial Sample Generation", Norton, Andrew and Qi, Yanjun, http://arxiv.org/abs/1706.01763
+
 
 This is Andrew Norton's capstone research work.  The goal is to perform a similar function to Google's TensorFlow Playground, but for evasion attacks in adversiaral machine learning.  It is a web service that enables the user to visualize the creation of adversarial samples to neural networks.
+
 
 Screenshots and Demo
 --------------------
