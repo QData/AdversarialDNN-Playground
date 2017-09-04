@@ -11,7 +11,6 @@ Reference Papers:
 
 This is Andrew Norton's capstone research work.  The goal is to perform a similar function to Google's TensorFlow Playground, but for evasion attacks in adversiaral machine learning.  It is a web service that enables the user to visualize the creation of adversarial samples to neural networks.
 
-
 Screenshots and Demo
 --------------------
 

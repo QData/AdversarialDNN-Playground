@@ -36,7 +36,7 @@
           -->
           <a class="navbar-brand" href="index">Adversarial Playground</a>
         </div>
-        
+
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li><a href="jsma">Jacobian Saliency Map</a></li>
@@ -61,7 +61,7 @@
               </div>
               <div class="panel-body">
                 <p>
-                In recent years, Deep Neural Networks have become an essential tool for many machine learning tasks, especially image classification.  However, this has given rise to the study of <em>adversarial samples</em>--carefully crafted inputs for a neural network that result in an incorrect classification. 
+                In recent years, Deep Neural Networks have become an essential tool for many machine learning tasks, especially image classification.  However, this has given rise to the study of <em>adversarial samples</em>--carefully crafted inputs for a neural network that result in an incorrect classification.
                 </p>
                 <p>
                 In the spirit of the TensorFlow Playground, we present the Adversarial Playground: a web-based visualization tool to assist users in understanding the differences between common adversarial machine learning techniques.  Upon launch, the application starts a lightweight Python webserver hosting a collection of pages related to the visualization.  The server-based nature allows remote hosting, but the webserver may be hosted on any computer running TensorFlow.
@@ -78,7 +78,7 @@
 
                 The first two approaches implement an L<sup>0</sup>-norm method based on the work in <em>The Limitations of Deep Learning in Adversarial Settings</em> by Papernot et al.<sup><a href="https://arxiv.org/abs/1511.07528" target="_blank">[1]</a></sup>; the first is a direct implementation of their work, while the latter is our own contribution -- an approximation to their algorithm that runs much faster, suitable for a web-based tool.  The third evasion approach is an L<sup>&infin;</sup>-based attack, following the common Fast Gradient Sign method.  This implementation was directly adapted from the Cleverhans toolkit, also by Papernot et al<sup><a href="https://arxiv.org/abs/1610.00768" target="_blank">[2]</a></sup>.
                 </p>
-                
+
                 <p>
                   Once on the page for each evasion algorithm, you may select a seed image, adjust the attacking power, and select a target class (for targeted methods).  Once you have done so, the evasion algorithm is performed on-demand in real time, and the resulting graphic (and classification likelihoods) are displayed.
                 </p>
@@ -87,7 +87,7 @@
                 <h4>Jacobian Saliency Map Approach (JSMA)</h4>
                 The core idea of this evasion algorithm is to modify pixels from the seed image that produce the greatest impact on the classification of the image.  This is done through the use of a <em>saliency map</em> -- a tool originally used for visualization.  After using the saliency map to determine the most impactful pixels, the adversary iteratively modifies pixels that <em>increase</em> the target classification likelihood while <em>suppressing</em> the likelihoods for all other classifications.  This process is repeated until either the modified image is in the target class, or the L<sup>0</sup> distance between the modified image and seed image exceeds a specified threshold.   For more information on the details of the algorithm, we refer the reader to Papernot et al<sup><a href="https://arxiv.org/abs/1511.07528" target="_blank">[1]</a></sup> mentioned above.
 
-                The modification to each pixel may take many forms; in this application, the one we apply is to set selected pixels to complete black.  (This, and its converse of setting selected pixels to pure white, is a relatively common implementation choice.)  Since we are minimizing the L<sup>0</sup> distance, there are very few pixels that are changed in this approach.  A typical example is below.  
+                The modification to each pixel may take many forms; in this application, the one we apply is to set selected pixels to complete black.  (This, and its converse of setting selected pixels to pure white, is a relatively common implementation choice.)  Since we are minimizing the L<sup>0</sup> distance, there are very few pixels that are changed in this approach.  A typical example is below.
 
                 <img src="{{ url_for('static', filename='jsma-attack.png') }}" class="img-responsive" alt="Example seed and adversarial sample" />
 
@@ -137,7 +137,7 @@
             </div>
             <div class="panel-body">
               <p>
-                The accompanying paper for this project is on <a href="https://arxiv.org/abs/1706.01763">arXiv</a>.
+                The accompanying paper for this project is on <a href="https://arxiv.org/abs/1706.01763">arXiv(I)</a> and <a href="https://arxiv.org/abs/1708.00807">arXiv(II)</a>.
               </p>
             </div>
           </div>
@@ -150,7 +150,7 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    
+
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
     <script src="{{ url_for('static', filename='bs/js/bootstrap.min.js') }}"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
