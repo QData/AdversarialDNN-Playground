@@ -1,8 +1,24 @@
 Adversarial DNN Playground
 ==========================
 
-Reference Papers:
 
+
+Citation:
+---------
+
+```
+@inproceedings{norton2017adversarial,
+  title={Adversarial-Playground: A visualization suite showing how adversarial examples fool deep learning},
+  author={Norton, Andrew P and Qi, Yanjun},
+  booktitle={Visualization for Cyber Security (VizSec), 2017 IEEE Symposium on},
+  pages={1--4},
+  year={2017},
+  organization={IEEE}
+}
+```
+
+Reference Papers:
+---------
 [1] "Adversarial-Playground: A Visualization Suite Showing How Adversarial
   Examples Fool Deep Learning", Andrew P. Norton, Yanjun Qi, [arxiv](http://arxiv.org/abs/1708.00807) (this is a revised version of [1])
   Published in:  2017 IEEE Symposium on Visualization for Cyber Security (VizSec), [URL](http://ieeexplore.ieee.org/document/8062202/)
@@ -88,16 +104,5 @@ Framework
       - Used Seiyria's [Bootstrap slider][bootstrap-slider]
     - Ploty.JS utilized for visualization
 
-Citation:
----------
-
-```
-@article{norton2017advplayground,
-  title={Adversarial Playground: A Visualization Suite for Adversarial Sample Generation},
-  author={Norton, Andrew and Qi, Yanjun},
-  url = {http://arxiv.org/abs/1706.01763}
-  year={2017},
-}
-```
 
 [bootstrap-slider]: https://github.com/seiyria/bootstrap-slider
